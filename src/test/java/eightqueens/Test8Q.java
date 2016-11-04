@@ -11,6 +11,7 @@ import eightqueens.AbstractBoard;
 import eightqueens.ISolver8Q;
 import eightqueens.IVerifier;
 import eightqueens.bitpack.BitPackSolver;
+import eightqueens.list.ListSolver;
 import eightqueens.naive.Board;
 import eightqueens.naive.SimpleSolver;
 import eightqueens.naive.SimpleVerifier;
@@ -19,15 +20,16 @@ public class Test8Q {
 	
 	ISolver8Q solver;
 	IVerifier verifier;
-	//50
-	final int rounds = 50;
+	//100 rounds are ok for ListSolver and BitPack solver, reduce for the slower SimpleSolver
+	final int rounds = 100;
 	
 	@Before
 	public void setup(){
-		//simplesolver 1300ms
-		//bitpacksolver 240ms
-		//listsolver 260ms;
-		solver = new BitPackSolver();
+		//simple solver 1224ms / round
+		//bitpack solver 186ms / round
+		//listsolver 114ms / round
+		
+		solver = new ListSolver();
 		verifier = new SimpleVerifier();
 	}
 	
@@ -65,18 +67,18 @@ public class Test8Q {
 	}
 
 	@Test
-	public void test() {
+	public void testPerformance() {
 		long timestamp = -System.currentTimeMillis();
 		List<AbstractBoard> solutions = null;
 		for (int round=0;round<rounds;round++){
 			solutions = solver.solve();
 			assertEquals(92, solutions.size());
 		}
+		timestamp+=System.currentTimeMillis();
+		System.out.print((timestamp/rounds)+" ms/round");
 		for (AbstractBoard abstractBoard:solutions){
 			assertTrue(verifier.isValidSolution(abstractBoard));
 		}
-		timestamp+=System.currentTimeMillis();
-		System.out.print((timestamp/rounds)+" ms/round");
 	}
 
 }

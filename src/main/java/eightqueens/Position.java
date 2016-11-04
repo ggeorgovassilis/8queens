@@ -1,4 +1,4 @@
-package queens;
+package eightqueens;
 
 public class Position {
 

@@ -54,8 +54,8 @@ public class ListSolver implements ISolver8Q {
 				//observation core i7, jdk 8: A+B+C==0 is faster than (A==0)&&(B==0)&&(C==0)
 				//this is surprising because the getNeDiagonal computation is often unnecessary and
 				//I'd expect the && checks to avoid the unnecessary getNeDiagonal invocation
-				if ((rowsBitmap & (1 << row)) + (seDiagonalsBitmap & (getSeDiagonalBitShift(row, column)))
-						+ (neDiagonalsBitmap & (getNeDiagonalBitShift(row, column))) == 0) {
+				if (((rowsBitmap & (1 << row)) + (seDiagonalsBitmap & getSeDiagonalBitShift(row, column))
+						+ (neDiagonalsBitmap & getNeDiagonalBitShift(row, column))) == 0) {
 					// no operations on columns: there can be always only a
 					// single queen in a column, thus we don't need to set/unset
 					// them. reminder: inverted logic: 0 = TRUE, 1 = FALSE

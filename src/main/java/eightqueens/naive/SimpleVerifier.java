@@ -9,6 +9,8 @@ public class SimpleVerifier implements IVerifier {
 		int queens = 0;
 		for (byte column = 0; column < 8; column++)
 			if (abstractBoard.get(row, column)) {
+				if (queens == 1)
+					return false;
 				queens++;
 			}
 		return queens == 1;
@@ -18,38 +20,35 @@ public class SimpleVerifier implements IVerifier {
 		int queens = 0;
 		for (byte row = 0; row < 8; row++)
 			if (abstractBoard.get(row, column)) {
+				if (queens == 1)
+					return false;
 				queens++;
 			}
 		return queens == 1;
 	}
 
 	public boolean isSquareOccupiedOverflowSafe(byte row, byte column, AbstractBoard abstractBoard) {
-		return (column >= 0 && column < 8 && row >= 0 && row < 8 && abstractBoard.get(
-				row, column));
+		return (column >= 0 && column < 8 && row >= 0 && row < 8 && abstractBoard.get(row, column));
 	}
 
 	public boolean hasQueenInAnyDiagonal(int row, int column, AbstractBoard abstractBoard) {
 		for (byte radius = 1; radius < 8; radius++) {
-			if (isSquareOccupiedOverflowSafe((byte)(row + radius), (byte)(column + radius),
-					abstractBoard)
-					|| isSquareOccupiedOverflowSafe((byte)(row - radius), (byte)(column
-							+ radius), abstractBoard)
-					|| isSquareOccupiedOverflowSafe((byte)(row + radius), (byte)(column
-							- radius), abstractBoard)
-					|| isSquareOccupiedOverflowSafe((byte)(row - radius), (byte)(column
-							- radius), abstractBoard))
+			if (isSquareOccupiedOverflowSafe((byte) (row + radius), (byte) (column + radius), abstractBoard)
+					|| isSquareOccupiedOverflowSafe((byte) (row - radius), (byte) (column + radius), abstractBoard)
+					|| isSquareOccupiedOverflowSafe((byte) (row + radius), (byte) (column - radius), abstractBoard)
+					|| isSquareOccupiedOverflowSafe((byte) (row - radius), (byte) (column - radius), abstractBoard))
 				return true;
 		}
 		return false;
 	}
-	
-	public boolean areThere8Queens(AbstractBoard abstractBoard){
+
+	public boolean areThere8Queens(AbstractBoard abstractBoard) {
 		int countQueens = 0;
 		for (byte row = 0; row < 8; row++)
 			for (byte column = 0; column < 8; column++)
 				if (abstractBoard.get(row, column))
 					countQueens++;
-		return countQueens ==8;
+		return countQueens == 8;
 	}
 
 	@Override
@@ -61,10 +60,9 @@ public class SimpleVerifier implements IVerifier {
 		// 2nd test: no queen sees other queens
 		for (byte row = 0; row < 8; row++)
 			for (byte column = 0; column < 8; column++) {
-				if (abstractBoard.get(row, column)
-						&& (!hasExactlyOneQueenOnColumn(column, abstractBoard)
-								|| !hasExactlyOneQueenOnRow(column, abstractBoard) || hasQueenInAnyDiagonal(
-									row, column, abstractBoard)))
+				if (abstractBoard.get(row, column) && (!hasExactlyOneQueenOnColumn(column, abstractBoard)
+						|| !hasExactlyOneQueenOnRow(column, abstractBoard)
+						|| hasQueenInAnyDiagonal(row, column, abstractBoard)))
 					return false;
 			}
 		return true;
