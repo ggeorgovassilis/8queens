@@ -6,8 +6,14 @@ import java.util.List;
 import eightqueens.AbstractBoard;
 import eightqueens.ISolver8Q;
 
+/**
+ * Solves the 8-queen puzzle with pre-computed bit masks.
+ * @author ggeorgovassilis
+ *
+ */
 public class BitPackSolver implements ISolver8Q {
 
+	// each entry is a mask of fields a queen on that position (row+column*8) "sees"
 	private final long[] visibilityMask = new long[64];
 
 	public boolean isValidPosition(int row, int column) {
@@ -15,6 +21,7 @@ public class BitPackSolver implements ISolver8Q {
 	}
 
 	public BitPackSolver() {
+		//solvers are reusable, so expensive construction doesn't matter 
 		for (int row = 0; row < 8; row++)
 			for (int column = 0; column < 8; column++) {
 				long board = 0;
@@ -77,13 +84,13 @@ public class BitPackSolver implements ISolver8Q {
 		long board = 255;
 		int rows[] = new int[8];
 		int carry = 0;
-		List<AbstractBoard> abstractBoards = new ArrayList<AbstractBoard>(92);
+		List<AbstractBoard> solutions = new ArrayList<AbstractBoard>(92);
 		// carry = 0 -> the one time where it will be 1 it means that _all_
 		// columns have overflown (all queens were already on the last row)
 		while (carry == 0) {
 
 			// 1. verify if board is a valid solution
-			// in an older version i'd iterate over all 64 indexes instead of
+			// in an older version I'd iterate over all 64 indexes instead of
 			// row[column] which turned out to take twice as long
 
 			int i = 0;
@@ -93,15 +100,16 @@ public class BitPackSolver implements ISolver8Q {
 					break;
 			}
 			if (i==8)
-				abstractBoards.add(longToBoard(board));
+				solutions.add(longToBoard(board));
 
 			// 2. compute next combination
 			carry = 1;
 			for (int column = 0; column < 8; column++) {
 				int c = rows[column] + carry;
 				rows[column] = c % 8;
-				carry = c >> 3; // division by 8. Marginally (3ms) faster than
-								// the division itself.
+				carry = c >> 3; // division by 8. Shifting is marginally faster than
+								// the division itself... which is a bit disappointing
+								// because, supposedly, the JVM optimises these cases
 				if (carry == 0)
 					break;
 			}
@@ -112,7 +120,7 @@ public class BitPackSolver implements ISolver8Q {
 				board |= position(index(rows[column], column));
 			}
 		}
-		return abstractBoards;
+		return solutions;
 	}
 
 }

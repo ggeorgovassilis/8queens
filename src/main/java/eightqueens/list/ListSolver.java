@@ -7,6 +7,13 @@ import eightqueens.AbstractBoard;
 import eightqueens.ISolver8Q;
 import eightqueens.naive.Board;
 
+/**
+ * Solves the 8-queen puzzle. Keeps 4 lists of available rows, columns, NE and NW diagonals.
+ * Every time a queen is placed on the board, an entry from each of the aforementioned lists
+ * is removed. Models lists with bitmaps, so expect some heavy bit-fiddling.
+ * @author ggeorgovassilis
+ *
+ */
 public class ListSolver implements ISolver8Q {
 
 	// bitmaps work in reverse here: 0 means TRUE, 1 means FALSE. Turns out to
@@ -24,7 +31,7 @@ public class ListSolver implements ISolver8Q {
 */	
 	private int getSeDiagonalBitShift(int row, int column){
 		// this would normally be 1 << getSeDiagonal(row, column);
-		// but it's equal to
+		// but it's equal to:
 		return ((1 << 7) << row) >> column;
 	}
 
@@ -49,9 +56,9 @@ public class ListSolver implements ISolver8Q {
 				int row = queens[column];
 				// the joy of inverted logic: instead of logical operators we
 				// can add the results, because only if all are 0 (we don't
-				// expect negatives) the sum is 0
+				// expect negatives) the sum is 0.
 				
-				//observation core i7, jdk 8: A+B+C==0 is faster than (A==0)&&(B==0)&&(C==0)
+				//an observation core i7, jdk 8: A+B+C==0 is faster than (A==0)&&(B==0)&&(C==0)
 				//this is surprising because the getNeDiagonal computation is often unnecessary and
 				//I'd expect the && checks to avoid the unnecessary getNeDiagonal invocation
 				if (((rowsBitmap & (1 << row)) + (seDiagonalsBitmap & getSeDiagonalBitShift(row, column))

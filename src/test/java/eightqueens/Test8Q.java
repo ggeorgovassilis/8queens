@@ -20,7 +20,7 @@ public class Test8Q {
 	
 	ISolver8Q solver;
 	IVerifier verifier;
-	//100 rounds are ok for ListSolver and BitPack solver, reduce for the slower SimpleSolver
+	//100 rounds are ok for ListSolver and BitPackSolver, reduce for the slower SimpleSolver
 	final int rounds = 100;
 	
 	@Before
@@ -30,6 +30,8 @@ public class Test8Q {
 		//listsolver 114ms / round
 		
 		solver = new ListSolver();
+//		solver = new SimpleSolver();
+//		solver = new BitPackSolver();
 		verifier = new SimpleVerifier();
 	}
 	
